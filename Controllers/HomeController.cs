@@ -18,17 +18,10 @@ namespace code.Controllers
 
         public IActionResult Income()
         {
-            ViewData["Title"] = "Income";
-
-            return View();
-        }
-
-        public IActionResult Hours()
-        {
-            List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)> hoursData = 
+            List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)> incomeData = 
             new List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)>();
 
-            ViewData["Title"] = "Hours";
+            ViewData["Title"] = "Income";
 
             var connString = "Host=localhost;Username=postgres;Password=usE5k6mBMC1ciwv;Database=project-3";
             using (var conn = new NpgsqlConnection(connString))
@@ -40,13 +33,35 @@ namespace code.Controllers
                 using (var reader = cmd.ExecuteReader()) {
                     while (reader.Read()) {
                         (string name, string game_name, int owners_after, int sales, float price, string month, float gni) data = (reader.GetString(0), reader.GetString(1), reader.GetInt32(2), reader.GetInt32(3), reader.GetFloat(4), reader.GetString(5), 0f);
-                        /*data.name = reader.GetString(0);
-                        data.game_name = reader.GetString(1);
-                        data.owners_after = reader.GetInt32(2);
-                        data.sales = reader.GetInt32(3);
-                        data.price = reader.GetFloat(4);
-                        data.month = reader.GetString(5);
-                        data.gni = reader.GetInt32(6);*/
+                        incomeData.Add(data);
+                    }
+                }
+            }
+
+            ViewData["data"] = incomeData;
+
+            
+            return View();
+        }
+
+        public IActionResult Hours()
+        {
+            List<(string year, string season, int time)> hoursData = 
+            new List<(string year, string season, int time)>();
+            
+            ViewData["Title"] = "Hours";
+            
+
+            var connString = "Host=localhost;Username=postgres;Password=usE5k6mBMC1ciwv;Database=project-3";
+            using (var conn = new NpgsqlConnection(connString))
+            {
+                conn.Open();
+
+                // Retrieve all rows
+                using (var cmd = new NpgsqlCommand("SELECT * FROM vraag2", conn))
+                using (var reader = cmd.ExecuteReader()) {
+                    while (reader.Read()) {
+                        (string year, string season, int time) data = (reader.GetString(0), reader.GetString(1), reader.GetInt32(2));
                         hoursData.Add(data);
                     }
                 }

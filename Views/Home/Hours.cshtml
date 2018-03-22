@@ -1,5 +1,5 @@
 ﻿@{
-	List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)> data = (List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)>) ViewData["data"];
+	List<(string year, string season, int time)> data = (List<(string year, string season, int time)>) ViewData["data"];
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -9,43 +9,10 @@
 		foreach (var dat in data)
 		{
 			<tr>
-				<td>@dat.name</td>
-				<td>@dat.gni</td>
-				<td>@dat.game_name</td>
-				<td>@dat.sales</td>
+				<td>@dat.year</td>
+				<td>@dat.season</td>
+				<td>@dat.time</td>
 			</tr>
 		}
 	}
 </table>
-
-<script type="text/javascript">
- 
-	window.onload = function () {
-
-		var chart = new CanvasJS.Chart("chartContainer", {
-			theme: "theme2",
-			animationEnabled: true,
-			height: 400,
-			width: 600,
-			data: [
-				{
-					type: "area", //change type to bar, line, area, pie, etc
-					dataPoints: [
-						{ x: 10, y: 71 },
-						{ x: 20, y: 55 },
-						{ x: 30, y: 50 },
-						{ x: 40, y: 65 },
-						{ x: 50, y: 95 },
-						{ x: 60, y: 68 },
-						{ x: 70, y: 28 },
-						{ x: 80, y: 34 },
-						{ x: 90, y: 14 }
-					]
-				}
-			]
-		});
-		chart.render();
-	};
-</script>
-
-<div id="chartContainer"></div>
