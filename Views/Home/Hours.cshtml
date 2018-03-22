@@ -1,18 +1,20 @@
 ﻿@{
-	var teachers = (Dictionary<string, int>)ViewData["Teachers"];
+	List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)> data = (List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)>) ViewData["data"];
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<table class="table" id="teachers">
+<table class="hours table">
 	@{
-		foreach (var teacher in teachers)
-			{
-				<tr>
-					<td>@teacher.Key</td>
-					<td>@teacher.Value</td>
-				</tr>
-			}
+		foreach (var dat in data)
+		{
+			<tr>
+				<td>@dat.name</td>
+				<td>@dat.gni</td>
+				<td>@dat.game_name</td>
+				<td>@dat.sales</td>
+			</tr>
+		}
 	}
 </table>
 
@@ -20,16 +22,6 @@
  
 	window.onload = function () {
 
-		var table = Document.getElementById("teachers");
-		
-
-		for (var r = 0, row; row = table.rows[r]; r++) {
-			var tempRowArray;
-			for (var c = 0, col; col = row.cells[c]; c++) {
-				var tempColArray;
-				temp
-			}  
-		}
 		var chart = new CanvasJS.Chart("chartContainer", {
 			theme: "theme2",
 			animationEnabled: true,
