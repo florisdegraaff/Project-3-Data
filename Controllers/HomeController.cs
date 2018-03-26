@@ -18,17 +18,9 @@ namespace code.Controllers
 
         public IActionResult Income()
         {
-            ViewData["Title"] = "Income";
 
-            return View();
-        }
-
-        public IActionResult Hours()
-        {
-            List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)> hoursData = 
-            new List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)>();
-
-            ViewData["Title"] = "Hours";
+        // Get data from database
+            List<Income> incomeList = new List<Income>();
 
             var connString = "Host=localhost;Username=postgres;Password=usE5k6mBMC1ciwv;Database=project-3";
             using (var conn = new NpgsqlConnection(connString))
@@ -39,20 +31,41 @@ namespace code.Controllers
                 using (var cmd = new NpgsqlCommand("SELECT * FROM vraag1", conn))
                 using (var reader = cmd.ExecuteReader()) {
                     while (reader.Read()) {
-                        (string name, string game_name, int owners_after, int sales, float price, string month, float gni) data = (reader.GetString(0), reader.GetString(1), reader.GetInt32(2), reader.GetInt32(3), reader.GetFloat(4), reader.GetString(5), 0f);
-                        /*data.name = reader.GetString(0);
-                        data.game_name = reader.GetString(1);
-                        data.owners_after = reader.GetInt32(2);
-                        data.sales = reader.GetInt32(3);
-                        data.price = reader.GetFloat(4);
-                        data.month = reader.GetString(5);
-                        data.gni = reader.GetInt32(6);*/
-                        hoursData.Add(data);
+                        incomeList.Add(new Income{country_name = reader.GetString(0),  game_name = reader.GetString(1), owners_after = reader.GetInt32(2), sales = reader.GetInt32(3), price = reader.GetFloat(4), month = reader.GetString(5), gni = 0});
                     }
                 }
             }
 
-            ViewData["data"] = hoursData;
+        // Set title and data collected from database
+            ViewData["Title"] = "Income";
+            ViewData["Income"] = incomeList;
+
+            return View();
+        }
+
+        public IActionResult Hours()
+        {
+        
+        // Get data from database
+            List<Hour> hourList = new List<Hour>();
+
+            var connString = "Host=localhost;Username=postgres;Password=usE5k6mBMC1ciwv;Database=project-3";
+            using (var conn = new NpgsqlConnection(connString))
+            {
+                conn.Open();
+
+                // Retrieve all rows
+                using (var cmd = new NpgsqlCommand("SELECT * FROM vraag2", conn))
+                using (var reader = cmd.ExecuteReader()) {
+                    while (reader.Read()) {
+                        hourList.Add(new Hour{year = reader.GetString(0), season = reader.GetString(1), time = reader.GetInt32(2)});
+                    }
+                }
+            }
+
+        // Set title and data collected from database
+            ViewData["Title"] = "Hours";
+            ViewData["Hour"] = hourList;
             return View();
         }
 
