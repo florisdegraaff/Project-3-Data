@@ -1,10 +1,13 @@
-﻿@{
-	List<(string year, string season, int time)> data = (List<(string year, string season, int time)>) ViewData["data"];
+﻿@model code.Models.Hour
+@{
+	List<Hour> data = (List<Hour>) ViewData ["Hour"];
 }
 
+
+<!-- Create title and hidden table -->
 <h2>@ViewData["Title"]</h2>
 
-<table class="hours table">
+<table class="table" id="hour" style="display: none">
 	@{
 		foreach (var dat in data)
 		{
@@ -16,3 +19,63 @@
 		}
 	}
 </table>
+
+<!-- Load in Javascript -->
+<script type="text/javascript">
+ 
+	window.onload = function () {
+		
+
+		// Get data from hidden table
+		data = [];
+		table = document.getElementById ("hour");
+		for (var i = 0; i < table.rows.length; i++) {
+			rowData = [];
+
+			var cellLength = table.rows.item(i).cells.length;
+			for (var j = 0; j < cellLength; j++) {
+				rowData [j] = table.rows.item(i).cells.item(j).innerHTML;
+			}
+
+			data [i] = {label: rowData[1], y: parseInt(rowData[2])};
+		}
+
+		for (var i = 0; i < data.length; i++) {
+			console.log(data[i]);
+		}
+
+
+		// Create charts
+		var yearChart = new CanvasJS.Chart("yearChart", {
+			theme: "theme2",
+			animationEnabled: true,
+			height: 400,
+			width: 550,
+			data: [
+				{
+					type: "area", //change type to bar, line, area, pie, etc
+					dataPoints: data
+				}
+			]
+		});
+		yearChart.render();
+
+
+		var seasonChart = new CanvasJS.Chart("seasonChart", {
+			theme: "theme2",
+			animationEnabled: true,
+			height: 400,
+			width: 550,
+			data: [
+				{
+					type: "area", //change type to bar, line, area, pie, etc
+					dataPoints: data
+				}
+			]
+		});
+		seasonChart.render();
+	};
+</script>
+
+<div id="yearChart" style="width: 550px; height: 400px; display: inline-block"></div>
+<div id="seasonChart" style="width: 550px; height: 400px; display: inline-block"></div>

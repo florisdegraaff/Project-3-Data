@@ -1,46 +1,69 @@
-﻿@{
-	List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)> data = (List<(string name, string game_name, int owners_after, int sales, float price, string month, float gni)>) ViewData["data"];
+﻿@model code.Models.Income
+@{
+	List<Income> data = (List<Income>) ViewData ["Income"];
 }
 
+<!-- Load title and hidden table -->
 <h2>@ViewData["Title"]</h2>
 
-<table class="hours table">
-	@{
-		foreach (var dat in data)
-		{
-			<tr>
-				<td>@dat.name</td>
-				<td>@dat.gni</td>
-				<td>@dat.game_name</td>
-				<td>@dat.sales</td>
-			</tr>
-		}
-	}
+<table class="table" id="income" style="display: none">
+	<tr>
+		<th>Country name</th>
+		<th>GNI</th>
+		<th>Game name</th>
+		<th>Owners after</th>
+	</tr>
+
+@foreach (var dat in data)
+{
+	<tr>
+		<td>@dat.country_name</td>
+		<td>@dat.gni</td>
+		<td>@dat.game_name</td>
+		<td>@dat.owners_after</td>
+	</tr>
+}
 </table>
 
+<!-- Load in Javascript -->
 <script type="text/javascript">
  
 	window.onload = function () {
 
+		// Get data from hidden table
+		data = [];
+		table = document.getElementById ("income");
+		for (var i = 0; i < table.rows.length; i++) {
+			rowData = [];
+
+			var cellLength = table.rows.item(i).cells.length;
+			for (var j = 0; j < cellLength; j++) {
+				rowData [j] = table.rows.item(i).cells.item(j).innerHTML;
+			}
+
+			data [i] = {label: rowData[2], y: rowData[3]};
+		}
+
+		// Sample data (remove this section when using real data)
+		data = [
+			{label: "SampleX01", y: 20},
+			{label: "SampleX02", y: 50},
+			{label: "SampleX03", y: 40},
+			{label: "SampleX04", y: 80},
+			{label: "SampleX05", y: 10}
+		];
+
+		
+		// Create chart
 		var chart = new CanvasJS.Chart("chartContainer", {
 			theme: "theme2",
 			animationEnabled: true,
 			height: 400,
-			width: 600,
+			width: 1200,
 			data: [
 				{
 					type: "area", //change type to bar, line, area, pie, etc
-					dataPoints: [
-						{ x: 10, y: 71 },
-						{ x: 20, y: 55 },
-						{ x: 30, y: 50 },
-						{ x: 40, y: 65 },
-						{ x: 50, y: 95 },
-						{ x: 60, y: 68 },
-						{ x: 70, y: 28 },
-						{ x: 80, y: 34 },
-						{ x: 90, y: 14 }
-					]
+					dataPoints: data
 				}
 			]
 		});
