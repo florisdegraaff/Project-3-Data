@@ -22,7 +22,7 @@ namespace code.Controllers
         // Get data from database
             List<Income> incomeList = new List<Income>();
 
-            var connString = "Host=localhost;Username=postgres;Password=usE5k6mBMC1ciwv;Database=project-3";
+            var connString = "Host=localhost;Username=postgres;Password=admin123;Database=project-3";
             using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
@@ -49,7 +49,7 @@ namespace code.Controllers
         // Get data from database
             List<Hour> hourList = new List<Hour>();
 
-            var connString = "Host=localhost;Username=postgres;Password=usE5k6mBMC1ciwv;Database=project-3";
+            var connString = "Host=localhost;Username=postgres;Password=admin123;Database=project-3";
             using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
