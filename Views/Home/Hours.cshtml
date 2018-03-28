@@ -7,7 +7,7 @@
 <!-- Create title and hidden table -->
 <h2>@ViewData["Title"]</h2>
 
-<table class="table" id="hour" style="display: none">
+<table class="table hidden" id="hour">
 	@{
 		foreach (var dat in data)
 		{
@@ -20,44 +20,46 @@
 	}
 </table>
 
-<div id="charts" style="width: 95%; height: 400px; display: inline-block">
-	<div class="dropdown" style="display: inline-block">
-		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-left" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			Select year
-			<span class="caret"></span>
-		</button>
-		<ul id="left-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-			@{
-				string lastYear = "";
-				foreach (var dat in data)
-				{
-					if (dat.year != lastYear) {
-						<li onclick="ChangeChartYear(@dat.year, 'left')"><a>@dat.year</a></li>
+<div id="charts">
+	<div class="filter">
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-left" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				Select year
+				<span class="caret"></span>
+			</button>
+			<ul id="left-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				@{
+					string lastYear = "";
+					foreach (var dat in data)
+					{
+						if (dat.year != lastYear) {
+							<li onclick="ChangeChartYear(@dat.year, 'left')"><a>@dat.year</a></li>
 
-						lastYear = dat.year;
+							lastYear = dat.year;
+						}
 					}
 				}
-			}
-		</ul>
-	</div>
-	<div class="dropdown" style="display: inline-block">
-		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			Select year
-			<span class="caret"></span>
-		</button>
-		<ul id="right-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-			@{
-				lastYear = "";
-				foreach (var dat in data)
-				{
-					if (dat.year != lastYear) {
-						<li onclick="ChangeChartYear(@dat.year, 'right')"><a>@dat.year</a></li>
+			</ul>
+		</div>
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				Select year
+				<span class="caret"></span>
+			</button>
+			<ul id="right-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				@{
+					lastYear = "";
+					foreach (var dat in data)
+					{
+						if (dat.year != lastYear) {
+							<li onclick="ChangeChartYear(@dat.year, 'right')"><a>@dat.year</a></li>
 
-						lastYear = dat.year;
+							lastYear = dat.year;
+						}
 					}
 				}
-			}
-		</ul>
+			</ul>
+		</div>
 	</div>
 	<div id="chart"></div>
 </div>

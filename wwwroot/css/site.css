@@ -33,3 +33,34 @@
         display: none;
     }
 }
+
+.hidden {
+    display: none;
+}
+
+#charts {
+    width: 95%;
+    height: 450px;
+    display: inline-block;
+}
+
+#charts > .filter > .dropdown {
+    display: inline-block;
+}
+
+#charts > .filter > .dropdown > #dropdownMenu-left {
+    background-color: #6D78AD;
+    color: rgb(255, 255, 255);
+}
+
+#charts > .filter > .dropdown > #dropdownMenu-right {
+    background-color: #51cda0;
+    color: rgb(255, 255, 255);
+}
+
+.filter {
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #ccc;
+
+    margin-bottom: 10px;
+}
