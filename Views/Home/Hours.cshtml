@@ -20,58 +20,52 @@
 	}
 </table>
 
-<div id="charts">
-	<div id="left" style="width: 45%; height: 400px; display: inline-block">
-		<div class="dropdown">
-			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-				Select year
-				<span class="caret"></span>
-			</button>
-			<ul id="left-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-				@{
-					string lastYear = "";
-					foreach (var dat in data)
-					{
-						if (dat.year != lastYear) {
-							<li onclick="ChangeChartYear(@dat.year, 'left')"><a>@dat.year</a></li>
+<div id="charts" style="width: 95%; height: 400px; display: inline-block">
+	<div class="dropdown" style="display: inline-block">
+		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-left" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			Select year
+			<span class="caret"></span>
+		</button>
+		<ul id="left-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+			@{
+				string lastYear = "";
+				foreach (var dat in data)
+				{
+					if (dat.year != lastYear) {
+						<li onclick="ChangeChartYear(@dat.year, 'left')"><a>@dat.year</a></li>
 
-							lastYear = dat.year;
-						}
+						lastYear = dat.year;
 					}
 				}
-			</ul>
-		</div>
-		<div id="left-chart"></div>
+			}
+		</ul>
 	</div>
-	<div id="right" style="width: 45%; height: 400px; display: inline-block">
-		<div class="dropdown">
-			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-				Select year
-				<span class="caret"></span>
-			</button>
-			<ul id="right-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-				@{
-					lastYear = "";
-					foreach (var dat in data)
-					{
-						if (dat.year != lastYear) {
-							<li onclick="ChangeChartYear(@dat.year, 'right')"><a>@dat.year</a></li>
+	<div class="dropdown" style="display: inline-block">
+		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			Select year
+			<span class="caret"></span>
+		</button>
+		<ul id="right-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+			@{
+				lastYear = "";
+				foreach (var dat in data)
+				{
+					if (dat.year != lastYear) {
+						<li onclick="ChangeChartYear(@dat.year, 'right')"><a>@dat.year</a></li>
 
-							lastYear = dat.year;
-						}
+						lastYear = dat.year;
 					}
 				}
-			</ul>
-		</div>
-		<div id="right-chart"></div>
+			}
+		</ul>
 	</div>
+	<div id="chart"></div>
 </div>
 
 
 <script>
 
-    var left_chart;
-    var right_chart;
+    var chart;
 
     var left_data = [];
     var right_data = [];
@@ -79,18 +73,36 @@
     var data = [];
 
     // Functions
-    function ChangeChartYear (year, chart) {
+    function ChangeChartYear (year, dropdown) {
         var i = 0;
+		document.getElementById("dropdownMenu-" + dropdown).innerHTML = year;
+
         data.forEach(element => {
             if (element.year == year) {
-                window[chart + "_data"][i] = element;
+				if (element.label == "winter") {
+					element.x = 0;
+                	window[dropdown + "_data"][0] = element;					
+				} else if (element.label == "lente") {
+					element.x = 1;
+                	window[dropdown + "_data"][1] = element;					
+				} else if (element.label == "zomer") {
+					element.x = 2;
+                	window[dropdown + "_data"][2] = element;					
+				} else if (element.label == "herfst") {
+					element.x = 3;
+                	window[dropdown + "_data"][3] = element;					
+				}
                 i++;
             }
         });
 
-        window[chart + "_chart"].options.data[0].dataPoints = window[chart + "_data"];
-		window[chart + "_chart"].options.title.text = year;
-		window[chart + "_chart"].render();
+		var pos = 0;
+		if (dropdown == "right") {
+			pos = 1;
+		}
+
+        chart.options.data[pos].dataPoints = window[dropdown + "_data"];
+		chart.render();
     }
 
 	window.onload = function () {
@@ -110,36 +122,23 @@
     }
 
     // Create charts
-    left_chart = new CanvasJS.Chart("left-chart", {
+    chart = new CanvasJS.Chart("chart", {
         theme: "theme2",
         animationEnabled: true,
         height: 400,
-		title: {
-			text: "2017"
-		},
         data: [
             {
+                type: "column",
+				dataPoints: data
+            },
+			{
                 type: "column",
 				dataPoints: data
             }
         ]
     });
+	
 	ChangeChartYear ("2017", "left");
-
-    right_chart = new CanvasJS.Chart("right-chart", {
-        theme: "theme2",
-        animationEnabled: true,
-        height: 400,
-		title: {
-			text: "2016"
-		},
-        data: [
-            {
-                type: "column",
-				dataPoints: data				
-            }
-        ]
-    });
 	ChangeChartYear ("2016", "right");	
 };
 </script>
