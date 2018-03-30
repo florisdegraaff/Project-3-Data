@@ -28,10 +28,18 @@ namespace code.Controllers
                 conn.Open();
 
                 // Retrieve all rows
-                using (var cmd = new NpgsqlCommand("SELECT * FROM vraag1", conn))
+                using (var cmd = new NpgsqlCommand("SELECT * FROM vraag1 order by country, month", conn))
                 using (var reader = cmd.ExecuteReader()) {
                     while (reader.Read()) {
-                        incomeList.Add(new Income{country_name = reader.GetString(0),  game_name = reader.GetString(1), owners_after = reader.GetInt32(2), sales = reader.GetInt32(3), price = reader.GetFloat(4), month = reader.GetString(5), gni = 0});
+                        incomeList.Add(new Income {
+                            country_name = reader.GetString(0),
+                            game_name = reader.GetString(1),
+                            owners_after = reader.GetInt32(2),
+                            sales = reader.GetInt32(3),
+                            price = reader.GetFloat(4),
+                            month = reader.GetString(5),
+                            gni = reader.GetFloat(6)
+                        });
                     }
                 }
             }

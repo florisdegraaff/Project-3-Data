@@ -6,33 +6,69 @@
 <!-- Load title and hidden table -->
 <h2>@ViewData["Title"]</h2>
 
-<table class="table" id="income" style="display: none">
-	<tr>
-		<th>Country name</th>
-		<th>GNI</th>
-		<th>Game name</th>
-		<th>Owners after</th>
-	</tr>
-
+<table class="table hidden" id="income">
 @foreach (var dat in data)
 {
 	<tr>
 		<td>@dat.country_name</td>
 		<td>@dat.gni</td>
+		<td>@dat.month</td>
 		<td>@dat.game_name</td>
-		<td>@dat.owners_after</td>
+		<td>@dat.sales</td>
+		<td>@dat.price</td>
 	</tr>
+		
 }
 </table>
 
+<!-- Container where chart is placed in -->
+<div id="charts">
+	<div class="filter">
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				February 2018
+				<span class="caret"></span>
+			</button>
+			<ul id="dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				<li onclick="ChangeChartMonth('february', 'February 2018')"><a>February 2018</a></li>
+				<li onclick="ChangeChartMonth('january', 'January 2018')"><a>January 2018</a></li>
+				<li onclick="ChangeChartMonth('december', 'December 2017')"><a>December 2017</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="chart"></div>
+</div>
+
 <!-- Load in Javascript -->
 <script type="text/javascript">
- 
+	
+	var chart;
+	var february = [];
+	var january = [];
+	var december = [];
+	var dropdown;
+
+	// Functions
+	function ChangeChartMonth (month, innerhtml) {
+		dropdown.innerHTML = innerhtml;
+
+		chart.options.data[0].dataPoints = window[month];
+		chart.render();
+	}
+
 	window.onload = function () {
 
+		dropdown = document.getElementById("dropdownMenu");
+
 		// Get data from hidden table
-		data = [];
-		table = document.getElementById ("income");
+		var countries = [];
+		var lastCountry = "";
+		var countryIndex = 0;
+
+		var lastMonth = "";
+		var gameIndex = -1;
+		var tempgames = [];
+		var table = document.getElementById ("income");
 		for (var i = 0; i < table.rows.length; i++) {
 			rowData = [];
 
@@ -41,34 +77,88 @@
 				rowData [j] = table.rows.item(i).cells.item(j).innerHTML;
 			}
 
-			data [i] = {label: rowData[2], y: rowData[3]};
+			if (rowData[0] != lastCountry) {
+
+				countries[countryIndex] = {label: rowData[0], y: parseFloat(rowData[1]) * 1000};
+				countryIndex++;
+				lastCountry = rowData[0];
+				lastMonth = rowData[2];
+
+				gameIndex++;
+				tempgames [gameIndex] = {country: lastCountry, month: rowData[2], sales_price: Math.round(parseInt(rowData[4]) * parseFloat(rowData[5]) * 100) / 100, sales: parseInt(rowData[4])};
+
+			} else {
+				if (lastMonth == rowData[2]) {
+					tempgames[gameIndex].sales_price = Math.round(tempgames[gameIndex].sales_price * 100 + Math.round(parseInt(rowData[4]) * parseFloat(rowData[5]) * 100)) / 100
+					tempgames[gameIndex].sales += parseInt(rowData[4]); 
+				} else {
+					gameIndex++;
+					tempgames [gameIndex] = {country: lastCountry, month: rowData[2], sales_price: Math.round(parseInt(rowData[4]) * parseFloat(rowData[5]) * 100) / 100, sales: parseInt(rowData[4])};
+					lastMonth = rowData[2];
+				}
+			}
 		}
 
-		// Sample data (remove this section when using real data)
-		data = [
-			{label: "SampleX01", y: 20},
-			{label: "SampleX02", y: 50},
-			{label: "SampleX03", y: 40},
-			{label: "SampleX04", y: 80},
-			{label: "SampleX05", y: 10}
-		];
+		var monthId = -1;
+		lastCountry = "";
 
+		tempgames.forEach((game) => {
+
+			if (lastCountry != game.country) {
+				monthId++;
+				lastCountry = game.country;	
+			}
+
+			window[game.month.toLowerCase()][monthId] = {label: game.country, y: Math.round((game.sales_price / game.sales) * 100) / 100};
+		});
+
+		console.log(december);
+		console.log(january);
+		console.log(february);
 		
 		// Create chart
-		var chart = new CanvasJS.Chart("chartContainer", {
+		chart = new CanvasJS.Chart("chart", {
 			theme: "theme2",
 			animationEnabled: true,
-			height: 400,
-			width: 1200,
+			toolTip: {
+				shared: true
+			},
+
+			axisX:{
+				title: "Countries",
+				interval:1,
+				labelAngle: -90
+			},
+			axisY:[
+				{
+					title: "GNI per capita",
+					titleFontColor: "#6D78AD",
+					prefix: "€"
+				}],
+			axisY2:[
+				{
+					title: "Average game expense",
+					titleFontColor: "#51CDA0",
+					prefix: "€",
+					suffix: ",-"
+				}
+			],
 			data: [
 				{
-					type: "area", //change type to bar, line, area, pie, etc
-					dataPoints: data
+					type: "column",
+					axisYType: "secondary",
+					dataPoints: february,
+					name: "Average game expense",
+					showInLegend: true
+				},
+				{
+					type: "area",
+					dataPoints: countries,
+					name: "GNI per capita",
+					showInLegend: true
 				}
 			]
 		});
 		chart.render();
 	};
 </script>
-
-<div id="chartContainer"></div>

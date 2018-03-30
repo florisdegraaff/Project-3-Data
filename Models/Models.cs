@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace code.Models
 {
@@ -16,7 +18,7 @@ namespace code.Models
         public int sales {get; set;}
         public float price {get; set;}
         public string month {get; set;}
-        public int gni {get; set;}
+        public float gni {get; set;}
     }
 
     public class Hour {
