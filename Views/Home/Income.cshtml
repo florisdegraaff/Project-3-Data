@@ -50,7 +50,7 @@
 
 	// Functions
 	function ChangeChartMonth (month, innerhtml) {
-		dropdown.innerHTML = innerhtml;
+		dropdown.innerHTML = innerhtml + " <span class='caret'></span>";
 
 		chart.options.data[0].dataPoints = window[month];
 		chart.render();
